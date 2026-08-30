@@ -13,7 +13,6 @@ public class Health : MonoBehaviour, IDamageable
     public bool IsDead => CurrentHealth <= 0f;
 
     public event Action<float> HealthChanged;
-
     public event Action Died;
 
     private void Awake()
@@ -23,10 +22,7 @@ public class Health : MonoBehaviour, IDamageable
 
     public void TakeDamage(float amount)
     {
-        if (IsDead)
-            return;
-
-        if (amount <= 0f)
+        if (IsDead || amount <= 0f)
             return;
 
         CurrentHealth -= amount;
@@ -39,18 +35,26 @@ public class Health : MonoBehaviour, IDamageable
 
         HealthChanged?.Invoke(CurrentHealth);
 
+        EventBus.Publish(
+            new DamageTakenEvent(
+                gameObject,
+                amount
+            )
+        );
+
         if (CurrentHealth <= 0f)
         {
             Died?.Invoke();
+
+            EventBus.Publish(
+                new EntityDiedEvent(gameObject)
+            );
         }
     }
 
     public void Heal(float amount)
     {
-        if (IsDead)
-            return;
-
-        if (amount <= 0f)
+        if (IsDead || amount <= 0f)
             return;
 
         CurrentHealth += amount;

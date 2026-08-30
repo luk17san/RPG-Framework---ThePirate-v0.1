@@ -4,7 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public bool IsPaused { get; private set; }
+    public GameState State { get; private set; }
 
     private void Awake()
     {
@@ -17,25 +17,42 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
+
+        State = GameState.Loading;
+    }
+
+    private void Start()
+    {
+        SetState(GameState.Playing);
+    }
+
+    public void SetState(GameState newState)
+    {
+        if (State == newState)
+            return;
+
+        State = newState;
+
+        EventBus.Publish(new GameStateChangedEvent(newState));
     }
 
     public void PauseGame()
     {
-        if (IsPaused)
+        if (State != GameState.Playing)
             return;
 
-        IsPaused = true;
+        SetState(GameState.Paused);
 
         Time.timeScale = 0f;
     }
 
     public void ResumeGame()
     {
-        if (!IsPaused)
+        if (State != GameState.Paused)
             return;
 
-        IsPaused = false;
-
         Time.timeScale = 1f;
+
+        SetState(GameState.Playing);
     }
 }
