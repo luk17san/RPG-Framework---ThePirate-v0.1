@@ -131,6 +131,36 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""FireLight"",
+                    ""type"": ""Button"",
+                    ""id"": ""26a0e5b6-f82d-4d29-9418-6bc2486b95a4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""FireHeavy"",
+                    ""type"": ""Button"",
+                    ""id"": ""0b900462-3ba8-4c7f-891b-510aea5333b6"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""ToggleAutoFire"",
+                    ""type"": ""Button"",
+                    ""id"": ""86dc9356-6430-4661-9099-d1f1b7a0becb"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -199,6 +229,39 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Stop"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""94ac9658-3987-495a-a69f-eb3445d540f8"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FireLight"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e05c84fe-0b68-424c-9916-44ca16d764a5"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""FireHeavy"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1388c798-eef9-4bcf-8547-7e0274ac967c"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleAutoFire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -211,6 +274,9 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
         m_Ship_ThrottleUp = m_Ship.FindAction("ThrottleUp", throwIfNotFound: true);
         m_Ship_ThrottleDown = m_Ship.FindAction("ThrottleDown", throwIfNotFound: true);
         m_Ship_Stop = m_Ship.FindAction("Stop", throwIfNotFound: true);
+        m_Ship_FireLight = m_Ship.FindAction("FireLight", throwIfNotFound: true);
+        m_Ship_FireHeavy = m_Ship.FindAction("FireHeavy", throwIfNotFound: true);
+        m_Ship_ToggleAutoFire = m_Ship.FindAction("ToggleAutoFire", throwIfNotFound: true);
     }
 
     ~@GameInputActions()
@@ -295,6 +361,9 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Ship_ThrottleUp;
     private readonly InputAction m_Ship_ThrottleDown;
     private readonly InputAction m_Ship_Stop;
+    private readonly InputAction m_Ship_FireLight;
+    private readonly InputAction m_Ship_FireHeavy;
+    private readonly InputAction m_Ship_ToggleAutoFire;
     /// <summary>
     /// Provides access to input actions defined in input action map "Ship".
     /// </summary>
@@ -322,6 +391,18 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Ship/Stop".
         /// </summary>
         public InputAction @Stop => m_Wrapper.m_Ship_Stop;
+        /// <summary>
+        /// Provides access to the underlying input action "Ship/FireLight".
+        /// </summary>
+        public InputAction @FireLight => m_Wrapper.m_Ship_FireLight;
+        /// <summary>
+        /// Provides access to the underlying input action "Ship/FireHeavy".
+        /// </summary>
+        public InputAction @FireHeavy => m_Wrapper.m_Ship_FireHeavy;
+        /// <summary>
+        /// Provides access to the underlying input action "Ship/ToggleAutoFire".
+        /// </summary>
+        public InputAction @ToggleAutoFire => m_Wrapper.m_Ship_ToggleAutoFire;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -360,6 +441,15 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
             @Stop.started += instance.OnStop;
             @Stop.performed += instance.OnStop;
             @Stop.canceled += instance.OnStop;
+            @FireLight.started += instance.OnFireLight;
+            @FireLight.performed += instance.OnFireLight;
+            @FireLight.canceled += instance.OnFireLight;
+            @FireHeavy.started += instance.OnFireHeavy;
+            @FireHeavy.performed += instance.OnFireHeavy;
+            @FireHeavy.canceled += instance.OnFireHeavy;
+            @ToggleAutoFire.started += instance.OnToggleAutoFire;
+            @ToggleAutoFire.performed += instance.OnToggleAutoFire;
+            @ToggleAutoFire.canceled += instance.OnToggleAutoFire;
         }
 
         /// <summary>
@@ -383,6 +473,15 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
             @Stop.started -= instance.OnStop;
             @Stop.performed -= instance.OnStop;
             @Stop.canceled -= instance.OnStop;
+            @FireLight.started -= instance.OnFireLight;
+            @FireLight.performed -= instance.OnFireLight;
+            @FireLight.canceled -= instance.OnFireLight;
+            @FireHeavy.started -= instance.OnFireHeavy;
+            @FireHeavy.performed -= instance.OnFireHeavy;
+            @FireHeavy.canceled -= instance.OnFireHeavy;
+            @ToggleAutoFire.started -= instance.OnToggleAutoFire;
+            @ToggleAutoFire.performed -= instance.OnToggleAutoFire;
+            @ToggleAutoFire.canceled -= instance.OnToggleAutoFire;
         }
 
         /// <summary>
@@ -451,5 +550,26 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnStop(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FireLight" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFireLight(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "FireHeavy" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnFireHeavy(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleAutoFire" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleAutoFire(InputAction.CallbackContext context);
     }
 }
