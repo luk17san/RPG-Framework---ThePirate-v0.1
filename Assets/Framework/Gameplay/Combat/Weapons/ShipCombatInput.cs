@@ -3,80 +3,65 @@ using UnityEngine.InputSystem;
 
 public class ShipCombatInput : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField]
     private ShipWeaponController weaponController;
 
     [SerializeField]
-    private InputActionReference fireLightAction;
+    private ShipBroadsideSelector broadsideSelector;
+
+    [Header("Input")]
+    [SerializeField]
+    private InputAction fireLight;
 
     [SerializeField]
-    private InputActionReference fireHeavyAction;
-
-    private void Awake()
-    {
-        Debug.Log(
-            $"ShipCombatInput Awake on: {name}. " +
-            $"Controller: {weaponController != null}, " +
-            $"FireLight: {fireLightAction != null}, " +
-            $"FireHeavy: {fireHeavyAction != null}"
-        );
-    }
+    private InputAction fireHeavy;
 
     private void OnEnable()
     {
-        if (fireLightAction != null)
-        {
-            fireLightAction.action.performed += OnFireLight;
-            fireLightAction.action.Enable();
-        }
+        fireLight.Enable();
+        fireHeavy.Enable();
 
-        if (fireHeavyAction != null)
-        {
-            fireHeavyAction.action.performed += OnFireHeavy;
-            fireHeavyAction.action.Enable();
-        }
-
-        Debug.Log("ShipCombatInput enabled.");
+        fireLight.performed += OnFireLight;
+        fireHeavy.performed += OnFireHeavy;
     }
 
     private void OnDisable()
     {
-        if (fireLightAction != null)
-        {
-            fireLightAction.action.performed -= OnFireLight;
-            fireLightAction.action.Disable();
-        }
+        fireLight.performed -= OnFireLight;
+        fireHeavy.performed -= OnFireHeavy;
 
-        if (fireHeavyAction != null)
-        {
-            fireHeavyAction.action.performed -= OnFireHeavy;
-            fireHeavyAction.action.Disable();
-        }
+        fireLight.Disable();
+        fireHeavy.Disable();
     }
 
-    private void OnFireLight(InputAction.CallbackContext context)
+    private void OnFireLight(
+        InputAction.CallbackContext context)
     {
-        Debug.Log("LPM received by ShipCombatInput.");
-
-        if (weaponController == null)
-        {
-            Debug.LogWarning("ShipCombatInput: Weapon Controller is missing.");
-            return;
-        }
-
-        weaponController.FireWeaponType(WeaponType.LightCannons);
+        FireBroadside(WeaponType.LightCannons);
     }
 
-    private void OnFireHeavy(InputAction.CallbackContext context)
+    private void OnFireHeavy(
+        InputAction.CallbackContext context)
     {
-        Debug.Log("PPM received by ShipCombatInput.");
+        FireBroadside(WeaponType.HeavyCannons);
+    }
 
+    private void FireBroadside(
+        WeaponType weaponType)
+    {
         if (weaponController == null)
-        {
-            Debug.LogWarning("ShipCombatInput: Weapon Controller is missing.");
             return;
-        }
 
-        weaponController.FireWeaponType(WeaponType.HeavyCannons);
+        if (broadsideSelector == null)
+            return;
+
+        WeaponSide side =
+            broadsideSelector.GetSideFromMouse();
+
+        weaponController.FireBroadside(
+            weaponType,
+            side
+        );
     }
 }

@@ -7,6 +7,10 @@ public class Weapon : MonoBehaviour
     private WeaponDefinition definition;
 
     [SerializeField]
+    private WeaponSide side;
+
+    [Header("Fire Point")]
+    [SerializeField]
     private Transform firePoint;
 
     [Header("Projectile")]
@@ -16,6 +20,7 @@ public class Weapon : MonoBehaviour
     private float cooldownTimer;
 
     public WeaponDefinition Definition => definition;
+    public WeaponSide Side => side;
 
     private void Update()
     {
@@ -80,9 +85,9 @@ public class Weapon : MonoBehaviour
         }
 
         projectile.Initialize(
-    definition.damage,
-    definition.projectileSpeed,
-    definition.range
+            definition.damage,
+            definition.projectileSpeed,
+            definition.range
         );
 
         cooldownTimer = definition.cooldown;
