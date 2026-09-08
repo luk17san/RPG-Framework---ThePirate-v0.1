@@ -52,26 +52,74 @@ public class MovementController : MonoBehaviour
 
     private void UpdateSpeed()
     {
-        float targetSpeed = stats.GetTargetSpeed(throttle.CurrentLevel);
+        float gearLimit = stats.GetTargetSpeed(throttle.CurrentLevel);
 
-        bool isChangingDirection =
-            currentForwardSpeed != 0f &&
-            targetSpeed != 0f &&
-            Mathf.Sign(currentForwardSpeed) != Mathf.Sign(targetSpeed);
+        float speedInput = Mathf.Clamp(
+            movementInput.SpeedInput,
+            -1f,
+            1f
+        );
 
-        bool isIncreasingSpeed =
-            Mathf.Abs(targetSpeed) > Mathf.Abs(currentForwardSpeed) &&
-            !isChangingDirection;
+        bool isReverseGear =
+            throttle.CurrentLevel == MovementThrottleLevel.Reverse;
 
-        float rate = isIncreasingSpeed
-            ? stats.GetAcceleration(throttle.CurrentLevel)
-            : stats.GetDeceleration(throttle.CurrentLevel);
+        // Domyœlnie utrzymujemy aktualn¹ prêdkoœæ.
+        float targetSpeed = currentForwardSpeed;
+
+        // W/S steruj¹ przyspieszaniem i hamowaniem.
+        if (speedInput != 0f)
+        {
+            bool isAccelerating = speedInput > 0f;
+
+            // Na biegu wstecznym S przyspiesza,
+            // a W hamuje cofanie.
+            if (isReverseGear)
+                isAccelerating = speedInput < 0f;
+
+            targetSpeed = isAccelerating
+                ? gearLimit
+                : 0f;
+        }
+
+        // Nie pozwalamy przekroczyæ limitu wybranego biegu.
+        targetSpeed = ClampSpeedToGear(
+            targetSpeed,
+            gearLimit
+        );
+
+        // Dobieramy przyspieszanie lub hamowanie.
+        float rate = GetSpeedChangeRate(targetSpeed);
 
         currentForwardSpeed = Mathf.MoveTowards(
             currentForwardSpeed,
             targetSpeed,
             rate * Time.fixedDeltaTime
         );
+    }
+
+    private float ClampSpeedToGear(float speed, float gearLimit)
+    {
+        if (gearLimit > 0f)
+            return Mathf.Clamp(speed, 0f, gearLimit);
+
+        if (gearLimit < 0f)
+            return Mathf.Clamp(speed, gearLimit, 0f);
+
+        return 0f;
+    }
+
+    private float GetSpeedChangeRate(float targetSpeed)
+    {
+        bool changesDirection =
+            currentForwardSpeed * targetSpeed < 0f;
+
+        bool increasesSpeed =
+            Mathf.Abs(targetSpeed) > Mathf.Abs(currentForwardSpeed) &&
+            !changesDirection;
+
+        return increasesSpeed
+            ? stats.GetAcceleration(throttle.CurrentLevel)
+            : stats.GetDeceleration(throttle.CurrentLevel);
     }
 
     private void ApplyRotation()

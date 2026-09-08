@@ -75,6 +75,26 @@
                     "interactions": "",
                     "initialStateCheck": false,
                     "priority": 0
+                },
+                {
+                    "name": "Accelerate",
+                    "type": "Button",
+                    "id": "f2033aed-05dd-416b-a002-2a7c34fa3f0e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
+                },
+                {
+                    "name": "Decelerate",
+                    "type": "Button",
+                    "id": "5aacb74a-4c30-496f-ac98-0dca74447fba",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false,
+                    "priority": 0
                 }
             ],
             "bindings": [
@@ -114,7 +134,7 @@
                 {
                     "name": "",
                     "id": "b30db353-2fa7-4196-a4d0-6504d3787f53",
-                    "path": "<Keyboard>/w",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -174,6 +194,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "ToggleAutoFire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9eb5cebe-c2e5-4d56-88b7-2df7f2593aa0",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Accelerate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6ac5d38a-3592-40c6-bda5-e740e0f99c1f",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Decelerate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

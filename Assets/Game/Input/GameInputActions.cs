@@ -161,6 +161,26 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Accelerate"",
+                    ""type"": ""Button"",
+                    ""id"": ""f2033aed-05dd-416b-a002-2a7c34fa3f0e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
+                },
+                {
+                    ""name"": ""Decelerate"",
+                    ""type"": ""Button"",
+                    ""id"": ""5aacb74a-4c30-496f-ac98-0dca74447fba"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -200,7 +220,7 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b30db353-2fa7-4196-a4d0-6504d3787f53"",
-                    ""path"": ""<Keyboard>/w"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -262,6 +282,28 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleAutoFire"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9eb5cebe-c2e5-4d56-88b7-2df7f2593aa0"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Accelerate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6ac5d38a-3592-40c6-bda5-e740e0f99c1f"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Decelerate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -277,6 +319,8 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
         m_Ship_FireLight = m_Ship.FindAction("FireLight", throwIfNotFound: true);
         m_Ship_FireHeavy = m_Ship.FindAction("FireHeavy", throwIfNotFound: true);
         m_Ship_ToggleAutoFire = m_Ship.FindAction("ToggleAutoFire", throwIfNotFound: true);
+        m_Ship_Accelerate = m_Ship.FindAction("Accelerate", throwIfNotFound: true);
+        m_Ship_Decelerate = m_Ship.FindAction("Decelerate", throwIfNotFound: true);
     }
 
     ~@GameInputActions()
@@ -364,6 +408,8 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Ship_FireLight;
     private readonly InputAction m_Ship_FireHeavy;
     private readonly InputAction m_Ship_ToggleAutoFire;
+    private readonly InputAction m_Ship_Accelerate;
+    private readonly InputAction m_Ship_Decelerate;
     /// <summary>
     /// Provides access to input actions defined in input action map "Ship".
     /// </summary>
@@ -403,6 +449,14 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Ship/ToggleAutoFire".
         /// </summary>
         public InputAction @ToggleAutoFire => m_Wrapper.m_Ship_ToggleAutoFire;
+        /// <summary>
+        /// Provides access to the underlying input action "Ship/Accelerate".
+        /// </summary>
+        public InputAction @Accelerate => m_Wrapper.m_Ship_Accelerate;
+        /// <summary>
+        /// Provides access to the underlying input action "Ship/Decelerate".
+        /// </summary>
+        public InputAction @Decelerate => m_Wrapper.m_Ship_Decelerate;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -450,6 +504,12 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
             @ToggleAutoFire.started += instance.OnToggleAutoFire;
             @ToggleAutoFire.performed += instance.OnToggleAutoFire;
             @ToggleAutoFire.canceled += instance.OnToggleAutoFire;
+            @Accelerate.started += instance.OnAccelerate;
+            @Accelerate.performed += instance.OnAccelerate;
+            @Accelerate.canceled += instance.OnAccelerate;
+            @Decelerate.started += instance.OnDecelerate;
+            @Decelerate.performed += instance.OnDecelerate;
+            @Decelerate.canceled += instance.OnDecelerate;
         }
 
         /// <summary>
@@ -482,6 +542,12 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
             @ToggleAutoFire.started -= instance.OnToggleAutoFire;
             @ToggleAutoFire.performed -= instance.OnToggleAutoFire;
             @ToggleAutoFire.canceled -= instance.OnToggleAutoFire;
+            @Accelerate.started -= instance.OnAccelerate;
+            @Accelerate.performed -= instance.OnAccelerate;
+            @Accelerate.canceled -= instance.OnAccelerate;
+            @Decelerate.started -= instance.OnDecelerate;
+            @Decelerate.performed -= instance.OnDecelerate;
+            @Decelerate.canceled -= instance.OnDecelerate;
         }
 
         /// <summary>
@@ -571,5 +637,19 @@ public partial class @GameInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleAutoFire(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Accelerate" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAccelerate(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Decelerate" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDecelerate(InputAction.CallbackContext context);
     }
 }

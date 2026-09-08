@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class ShipPlayerInput : MonoBehaviour, IMovementInput
 {
     public float Turn { get; private set; }
+    public float SpeedInput { get; private set; }
 
     private GameInputActions input;
     private ShipController shipController;
@@ -34,6 +35,11 @@ public class ShipPlayerInput : MonoBehaviour, IMovementInput
     private void Update()
     {
         Turn = input.Ship.Steer.ReadValue<float>();
+
+        float accelerate = input.Ship.Accelerate.IsPressed() ? 1f : 0f;
+        float decelerate = input.Ship.Decelerate.IsPressed() ? 1f : 0f;
+
+        SpeedInput = accelerate - decelerate;
     }
 
     private void OnThrottleUp(InputAction.CallbackContext context)

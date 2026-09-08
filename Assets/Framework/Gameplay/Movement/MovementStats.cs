@@ -126,9 +126,9 @@ public class MovementStats : MonoBehaviour
         switch (level)
         {
             case MovementThrottleLevel.Reverse:
-                return GetModifiedValue(
+                return -GetModifiedValue(
                     MovementStat.ReverseSpeed,
-                    -speed
+                    speed
                 );
 
             case MovementThrottleLevel.Oars:
