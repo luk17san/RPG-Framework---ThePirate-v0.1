@@ -21,30 +21,71 @@ public interface IMovementStatsModifier
 
 public class MovementStats : MonoBehaviour
 {
-    [SerializeField] private MovementSettings baseSettings;
+    [SerializeField]
+    private MovementSettings baseSettings;
 
     private readonly List<IMovementStatsModifier> modifiers =
         new List<IMovementStatsModifier>();
 
-    public float ReverseSpeed => GetModifiedValue(MovementStat.ReverseSpeed, BaseReverseSpeed);
-    public float OarsSpeed => GetModifiedValue(MovementStat.OarsSpeed, BaseOarsSpeed);
-    public float PartialSailsSpeed => GetModifiedValue(MovementStat.PartialSailsSpeed, BasePartialSailsSpeed);
-    public float FullSailsSpeed => GetModifiedValue(MovementStat.FullSailsSpeed, BaseFullSailsSpeed);
-    public float Acceleration => GetModifiedValue(MovementStat.Acceleration, BaseAcceleration);
-    public float Deceleration => GetModifiedValue(MovementStat.Deceleration, BaseDeceleration);
-    public float TurnSpeed => GetModifiedValue(MovementStat.TurnSpeed, BaseTurnSpeed);
-    public float SteeringResponse => GetModifiedValue(MovementStat.SteeringResponse, BaseSteeringResponse);
-    public float TurnAuthorityAtRest => Mathf.Clamp01(GetModifiedValue(MovementStat.TurnAuthorityAtRest, BaseTurnAuthorityAtRest));
+    public MovementSettings BaseSettings => baseSettings;
 
-    private float BaseReverseSpeed => baseSettings != null ? baseSettings.ReverseSpeed : 0f;
-    private float BaseOarsSpeed => baseSettings != null ? baseSettings.OarsSpeed : 0f;
-    private float BasePartialSailsSpeed => baseSettings != null ? baseSettings.PartialSailsSpeed : 0f;
-    private float BaseFullSailsSpeed => baseSettings != null ? baseSettings.FullSailsSpeed : 0f;
-    private float BaseAcceleration => baseSettings != null ? baseSettings.Acceleration : 0f;
-    private float BaseDeceleration => baseSettings != null ? baseSettings.Deceleration : 0f;
-    private float BaseTurnSpeed => baseSettings != null ? baseSettings.TurnSpeed : 0f;
-    private float BaseSteeringResponse => baseSettings != null ? baseSettings.SteeringResponse : 0f;
-    private float BaseTurnAuthorityAtRest => baseSettings != null ? baseSettings.TurnAuthorityAtRest : 0f;
+    public float ReverseSpeed =>
+        GetModifiedValue(
+            MovementStat.ReverseSpeed,
+            GetGearSpeed(MovementThrottleLevel.Reverse)
+        );
+
+    public float OarsSpeed =>
+        GetModifiedValue(
+            MovementStat.OarsSpeed,
+            GetGearSpeed(MovementThrottleLevel.Oars)
+        );
+
+    public float PartialSailsSpeed =>
+        GetModifiedValue(
+            MovementStat.PartialSailsSpeed,
+            GetGearSpeed(MovementThrottleLevel.PartialSails)
+        );
+
+    public float FullSailsSpeed =>
+        GetModifiedValue(
+            MovementStat.FullSailsSpeed,
+            GetGearSpeed(MovementThrottleLevel.FullSails)
+        );
+
+    public float Acceleration =>
+        GetModifiedValue(
+            MovementStat.Acceleration,
+            GetCurrentGearAcceleration()
+        );
+
+    public float Deceleration =>
+        GetModifiedValue(
+            MovementStat.Deceleration,
+            GetCurrentGearDeceleration()
+        );
+
+    public float TurnSpeed =>
+        GetModifiedValue(
+            MovementStat.TurnSpeed,
+            baseSettings != null ? baseSettings.TurnSpeed : 0f
+        );
+
+    public float SteeringResponse =>
+        GetModifiedValue(
+            MovementStat.SteeringResponse,
+            baseSettings != null ? baseSettings.SteeringResponse : 0f
+        );
+
+    public float TurnAuthorityAtRest =>
+        Mathf.Clamp01(
+            GetModifiedValue(
+                MovementStat.TurnAuthorityAtRest,
+                baseSettings != null
+                    ? baseSettings.TurnAuthorityAtRest
+                    : 0f
+            )
+        );
 
     private void Awake()
     {
@@ -62,19 +103,114 @@ public class MovementStats : MonoBehaviour
         }
     }
 
+    public bool IsGearAvailable(MovementThrottleLevel level)
+    {
+        if (baseSettings == null)
+            return false;
+
+        return baseSettings.GetGear(level).Available;
+    }
+
     public float GetTargetSpeed(MovementThrottleLevel level)
     {
+        if (baseSettings == null)
+            return 0f;
+
+        MovementGearSettings gear = baseSettings.GetGear(level);
+
+        if (!gear.Available)
+            return 0f;
+
+        float speed = gear.Speed;
+
         switch (level)
         {
-            case MovementThrottleLevel.Reverse: return -ReverseSpeed;
-            case MovementThrottleLevel.Oars: return OarsSpeed;
-            case MovementThrottleLevel.PartialSails: return PartialSailsSpeed;
-            case MovementThrottleLevel.FullSails: return FullSailsSpeed;
-            default: return 0f;
+            case MovementThrottleLevel.Reverse:
+                return GetModifiedValue(
+                    MovementStat.ReverseSpeed,
+                    -speed
+                );
+
+            case MovementThrottleLevel.Oars:
+                return GetModifiedValue(
+                    MovementStat.OarsSpeed,
+                    speed
+                );
+
+            case MovementThrottleLevel.PartialSails:
+                return GetModifiedValue(
+                    MovementStat.PartialSailsSpeed,
+                    speed
+                );
+
+            case MovementThrottleLevel.FullSails:
+                return GetModifiedValue(
+                    MovementStat.FullSailsSpeed,
+                    speed
+                );
+
+            case MovementThrottleLevel.Stopped:
+            default:
+                return 0f;
         }
     }
 
-    private float GetModifiedValue(MovementStat stat, float baseValue)
+    public float GetAcceleration(MovementThrottleLevel level)
+    {
+        if (baseSettings == null)
+            return 0f;
+
+        return GetModifiedValue(
+            MovementStat.Acceleration,
+            baseSettings.GetGear(level).Acceleration
+        );
+    }
+
+    public float GetDeceleration(MovementThrottleLevel level)
+    {
+        if (baseSettings == null)
+            return 0f;
+
+        return GetModifiedValue(
+            MovementStat.Deceleration,
+            baseSettings.GetGear(level).Deceleration
+        );
+    }
+
+    public float GetTurnMultiplier(MovementThrottleLevel level)
+    {
+        if (baseSettings == null)
+            return 1f;
+
+        return baseSettings.GetGear(level).TurnMultiplier;
+    }
+
+    private float GetGearSpeed(MovementThrottleLevel level)
+    {
+        if (baseSettings == null)
+            return 0f;
+
+        return baseSettings.GetGear(level).Speed;
+    }
+
+    private float GetCurrentGearAcceleration()
+    {
+        return baseSettings != null
+            ? baseSettings.Oars.Acceleration
+            : 0f;
+    }
+
+    private float GetCurrentGearDeceleration()
+    {
+        return baseSettings != null
+            ? baseSettings.Oars.Deceleration
+            : 0f;
+    }
+
+    private float GetModifiedValue(
+        MovementStat stat,
+        float baseValue
+    )
     {
         float result = baseValue;
 

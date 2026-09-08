@@ -64,8 +64,8 @@ public class MovementController : MonoBehaviour
             !isChangingDirection;
 
         float rate = isIncreasingSpeed
-            ? stats.Acceleration
-            : stats.Deceleration;
+            ? stats.GetAcceleration(throttle.CurrentLevel)
+            : stats.GetDeceleration(throttle.CurrentLevel);
 
         currentForwardSpeed = Mathf.MoveTowards(
             currentForwardSpeed,
@@ -88,10 +88,14 @@ public class MovementController : MonoBehaviour
             speedFactor
         );
 
+        float turnMultiplier =
+    stats.GetTurnMultiplier(throttle.CurrentLevel);
+
         float turnAmount =
             currentTurn *
             stats.TurnSpeed *
             turnAuthority *
+            turnMultiplier *
             Time.fixedDeltaTime;
 
         body.MoveRotation(

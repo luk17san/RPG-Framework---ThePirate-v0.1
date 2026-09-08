@@ -12,12 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5619bdbbd1695eb4ab199eb2b1d5f999, type: 3}
   m_Name: PlayerShipMovementSettings
   m_EditorClassIdentifier: Assembly-CSharp::MovementSettings
-  reverseSpeed: 2.5
-  oarsSpeed: 4
-  partialSailsSpeed: 7
-  fullSailsSpeed: 10
-  acceleration: 2
-  deceleration: 3.5
+  reverse:
+    available: 1
+    speed: 2.5
+    acceleration: 1.5
+    deceleration: 3
+    turnMultiplier: 0.4
+  stopped:
+    available: 1
+    speed: 0
+    acceleration: 0
+    deceleration: 3.5
+    turnMultiplier: 0.15
+  oars:
+    available: 1
+    speed: 4
+    acceleration: 2
+    deceleration: 3.5
+    turnMultiplier: 0.8
+  partialSails:
+    available: 1
+    speed: 7
+    acceleration: 2
+    deceleration: 3
+    turnMultiplier: 1
+  fullSails:
+    available: 1
+    speed: 10
+    acceleration: 1.5
+    deceleration: 2
+    turnMultiplier: 0.65
   turnSpeed: 45
   steeringResponse: 4
   turnAuthorityAtRest: 0.15
+  gearChangeCooldown: 0.5

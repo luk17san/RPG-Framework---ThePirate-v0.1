@@ -1124,6 +1124,7 @@ GameObject:
   - component: {fileID: 1612964643}
   - component: {fileID: 1612964645}
   - component: {fileID: 1612964644}
+  - component: {fileID: 1612964646}
   m_Layer: 0
   m_Name: PlayerShip
   m_TagString: Untagged
@@ -1376,6 +1377,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BroadsideSequence
   delayBetweenWeapons: 0.08
+--- !u!114 &1612964646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612964632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd71f3d790b08634ea9e4188b5e4d87b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ShipSailController
+  sails:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  sailsForPartialSails: 2
+  sailsForFullSails: 4
 --- !u!1 &1652708866
 GameObject:
   m_ObjectHideFlags: 0
